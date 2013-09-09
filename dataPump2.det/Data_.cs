@@ -326,8 +326,9 @@ namespace dataPump2.det.Data_
                         ENTRY_POINT 'fn_iif' MODULE_NAME 'rfunc'");
             com.Add("execute procedure re_bild_triggers(2,null)");
             com.Add("EXECUTE PROCEDURE Re_bild_trees(2, NULL)");
-            
-            
+
+            fc.UserID = "sysdba";
+            fc.Password = "masterkey";
             
             #region PROCEDURES
             using (FbConnection fb = new FbConnection(fc.ConnectionString))

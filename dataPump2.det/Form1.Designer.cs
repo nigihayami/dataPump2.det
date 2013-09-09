@@ -40,6 +40,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.t_user_new = new System.Windows.Forms.TextBox();
+            this.is_user_new = new System.Windows.Forms.CheckBox();
             this.t_sysdba_new = new System.Windows.Forms.TextBox();
             this.is_sysdba_new = new System.Windows.Forms.CheckBox();
             this.t_sysdba = new System.Windows.Forms.TextBox();
@@ -54,8 +56,11 @@
             this.is_database = new System.Windows.Forms.CheckBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.is_user_new = new System.Windows.Forms.CheckBox();
-            this.t_user_new = new System.Windows.Forms.TextBox();
+            this.of_database = new System.Windows.Forms.OpenFileDialog();
+            this.p_1 = new System.Windows.Forms.ProgressBar();
+            this.l_1 = new System.Windows.Forms.Label();
+            this.l_2 = new System.Windows.Forms.Label();
+            this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -63,6 +68,7 @@
             this.panel2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -124,8 +130,8 @@
             this.tableLayoutPanel1.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
             this.tableLayoutPanel1.ColumnCount = 4;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 1.568627F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 90.78432F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 3.165735F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 1.937046F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 91.76756F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 3.910614F));
             this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel2, 1, 0);
@@ -182,7 +188,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(11, 4);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(367, 415);
+            this.panel2.Size = new System.Drawing.Size(1, 415);
             this.panel2.TabIndex = 1;
             // 
             // groupBox4
@@ -200,10 +206,30 @@
             this.groupBox4.Controls.Add(this.is_install);
             this.groupBox4.Location = new System.Drawing.Point(3, 85);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(361, 154);
+            this.groupBox4.Size = new System.Drawing.Size(0, 154);
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Установить Firebird 2.5";
+            // 
+            // t_user_new
+            // 
+            this.t_user_new.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.t_user_new.Location = new System.Drawing.Point(202, 94);
+            this.t_user_new.Name = "t_user_new";
+            this.t_user_new.Size = new System.Drawing.Size(0, 20);
+            this.t_user_new.TabIndex = 9;
+            this.t_user_new.Text = "12345";
+            // 
+            // is_user_new
+            // 
+            this.is_user_new.AutoSize = true;
+            this.is_user_new.Location = new System.Drawing.Point(30, 96);
+            this.is_user_new.Name = "is_user_new";
+            this.is_user_new.Size = new System.Drawing.Size(166, 17);
+            this.is_user_new.TabIndex = 8;
+            this.is_user_new.Text = "Воссоздать пользователей";
+            this.is_user_new.UseVisualStyleBackColor = true;
             // 
             // t_sysdba_new
             // 
@@ -211,7 +237,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.t_sysdba_new.Location = new System.Drawing.Point(202, 68);
             this.t_sysdba_new.Name = "t_sysdba_new";
-            this.t_sysdba_new.Size = new System.Drawing.Size(114, 20);
+            this.t_sysdba_new.Size = new System.Drawing.Size(0, 20);
             this.t_sysdba_new.TabIndex = 7;
             this.t_sysdba_new.Text = "masterkey";
             // 
@@ -231,7 +257,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.t_sysdba.Location = new System.Drawing.Point(202, 42);
             this.t_sysdba.Name = "t_sysdba";
-            this.t_sysdba.Size = new System.Drawing.Size(114, 20);
+            this.t_sysdba.Size = new System.Drawing.Size(0, 20);
             this.t_sysdba.TabIndex = 5;
             this.t_sysdba.Text = "masterkey";
             // 
@@ -247,7 +273,7 @@
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.Location = new System.Drawing.Point(322, 14);
+            this.button3.Location = new System.Drawing.Point(-33, 14);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(33, 23);
             this.button3.TabIndex = 3;
@@ -260,7 +286,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.t_install.Location = new System.Drawing.Point(30, 16);
             this.t_install.Name = "t_install";
-            this.t_install.Size = new System.Drawing.Size(286, 20);
+            this.t_install.Size = new System.Drawing.Size(0, 20);
             this.t_install.TabIndex = 2;
             // 
             // is_install
@@ -284,7 +310,7 @@
             this.groupBox3.Controls.Add(this.is_database);
             this.groupBox3.Location = new System.Drawing.Point(3, 6);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(361, 73);
+            this.groupBox3.Size = new System.Drawing.Size(0, 73);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Конвертировать базу данных";
@@ -302,12 +328,13 @@
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(322, 17);
+            this.button2.Location = new System.Drawing.Point(-33, 17);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(33, 23);
             this.button2.TabIndex = 2;
             this.button2.Text = "...";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // t_database
             // 
@@ -315,7 +342,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.t_database.Location = new System.Drawing.Point(30, 19);
             this.t_database.Name = "t_database";
-            this.t_database.Size = new System.Drawing.Size(286, 20);
+            this.t_database.Size = new System.Drawing.Size(0, 20);
             this.t_database.TabIndex = 1;
             this.t_database.Text = "D:\\Talisman_SQL\\Base\\tsql.gdb";
             // 
@@ -333,40 +360,59 @@
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.Color.MediumTurquoise;
+            this.panel3.Controls.Add(this.l_2);
+            this.panel3.Controls.Add(this.l_1);
+            this.panel3.Controls.Add(this.p_1);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(385, 4);
+            this.panel3.Location = new System.Drawing.Point(19, 4);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(7, 415);
+            this.panel3.Size = new System.Drawing.Size(372, 415);
             this.panel3.TabIndex = 2;
             // 
             // panel4
             // 
             this.panel4.BackColor = System.Drawing.Color.Aquamarine;
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(399, 4);
+            this.panel4.Location = new System.Drawing.Point(398, 4);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(11, 415);
+            this.panel4.Size = new System.Drawing.Size(12, 415);
             this.panel4.TabIndex = 3;
             // 
-            // is_user_new
+            // of_database
             // 
-            this.is_user_new.AutoSize = true;
-            this.is_user_new.Location = new System.Drawing.Point(30, 96);
-            this.is_user_new.Name = "is_user_new";
-            this.is_user_new.Size = new System.Drawing.Size(166, 17);
-            this.is_user_new.TabIndex = 8;
-            this.is_user_new.Text = "Воссоздать пользователей";
-            this.is_user_new.UseVisualStyleBackColor = true;
+            this.of_database.FileName = "openFileDialog1";
             // 
-            // t_user_new
+            // p_1
             // 
-            this.t_user_new.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.p_1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.t_user_new.Location = new System.Drawing.Point(202, 94);
-            this.t_user_new.Name = "t_user_new";
-            this.t_user_new.Size = new System.Drawing.Size(114, 20);
-            this.t_user_new.TabIndex = 9;
-            this.t_user_new.Text = "12345";
+            this.p_1.Location = new System.Drawing.Point(3, 204);
+            this.p_1.Name = "p_1";
+            this.p_1.Size = new System.Drawing.Size(366, 23);
+            this.p_1.TabIndex = 0;
+            // 
+            // l_1
+            // 
+            this.l_1.AutoSize = true;
+            this.l_1.Location = new System.Drawing.Point(3, 188);
+            this.l_1.Name = "l_1";
+            this.l_1.Size = new System.Drawing.Size(35, 13);
+            this.l_1.TabIndex = 2;
+            this.l_1.Text = "label2";
+            // 
+            // l_2
+            // 
+            this.l_2.AutoSize = true;
+            this.l_2.Location = new System.Drawing.Point(3, 240);
+            this.l_2.Name = "l_2";
+            this.l_2.Size = new System.Drawing.Size(35, 13);
+            this.l_2.TabIndex = 3;
+            this.l_2.Text = "label2";
+            // 
+            // timer2
+            // 
+            this.timer2.Interval = 3000;
+            this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
             // Form1
             // 
@@ -388,6 +434,8 @@
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -421,6 +469,11 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TextBox t_user_new;
         private System.Windows.Forms.CheckBox is_user_new;
+        private System.Windows.Forms.OpenFileDialog of_database;
+        private System.Windows.Forms.Label l_2;
+        private System.Windows.Forms.Label l_1;
+        private System.Windows.Forms.ProgressBar p_1;
+        private System.Windows.Forms.Timer timer2;
 
     }
 }

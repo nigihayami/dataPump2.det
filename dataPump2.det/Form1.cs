@@ -15,6 +15,7 @@ using System.Threading;
 using dataPump2.det.Arch_;
 using dataPump2.det.Check_;
 using dataPump2.det.Data_;
+using dataPump2.det.BR_;
 
 namespace dataPump2.det
 {
@@ -29,6 +30,10 @@ namespace dataPump2.det
                             + DateTime.Today.ToString("dd")
                             + DateTime.Now.ToString("HH")
                             + DateTime.Now.ToString("mm");
+
+        string p_cur = "";
+        string p_cur2 = "";       
+        
         #endregion
         #region connections
         FbConnectionStringBuilder fc_old = new FbConnectionStringBuilder();
@@ -166,9 +171,11 @@ namespace dataPump2.det
                 switch (i)
                 {
                     case 3:
+                        this.timer2.Enabled = true;
                         Thread t_ = new Thread(run_);
                         t_.Start();
-                        while (!t_.IsAlive) ; //ждем пока завершиться
+                        while (t_.IsAlive){Application.DoEvents();} ; //ждем пока завершиться
+                        this.timer2.Enabled = false;
                         break;
                 }
             }
@@ -255,14 +262,14 @@ namespace dataPump2.det
         {
             //перове - распакуем FB15
             bool res_ = false;
-            res_ = Arch_.Arch_.Decompress(new FileInfo(".\\fb\f15.zip"),@"c:\temp\det\fb15");
+            res_ = Arch_.Arch_.Decompress(new FileInfo(".\\fb\\f15.zip"),@"c:\temp\det");
 
             fc_old.UserID = "DBADMIN";
             fc_old.Password = "cnhfiysq";
             fc_old.Database = this.t_database.Text;
             fc_old.Pooling = false;
             fc_old.ServerType = FbServerType.Embedded;
-            fc_old.ClientLibrary = @"c:\temp\det\fb15\fbembed.dll";
+            fc_old.ClientLibrary = @"c:\temp\det\f15\fbembed.dll";
             
             //второе - проверка доступности функций TRIM and IIF            
             if (Check_.Check_.check_func(fc_old))
@@ -271,7 +278,50 @@ namespace dataPump2.det
                 Data_.Data_.run_replace(fc_old);
             }
             //теперь делаем B
+            if (!Directory.Exists(temp_folder))
+            {
+                Directory.CreateDirectory(temp_folder);
+            }
 
+            res_ = Arch_.Arch_.Decompress(new FileInfo(".\\fb\\f25.zip"), @"c:\temp\det");
+
+            fc_new.Database = temp_folder + @"\tsql_new.gdb";
+            fc_new.UserID = "DBADMIN";
+            fc_new.Password = "cnhfiysq";
+            fc_new.Pooling = false;
+            fc_new.Charset = "win1251";
+            fc_new.ServerType = FbServerType.Embedded;
+            fc_new.ClientLibrary = @"c:\temp\det\f25\fbembed.dll";
+            string fbk = temp_folder + @"\tsql.fbk";
+
+            p_cur = "Делаем B";
+            BR_.BR_.b_(fc_old, fbk);
+            while (!BR_.BR_.is_close_)
+            {
+                p_cur2 = BR_.BR_.result_;
+            }
+
+            p_cur = "Делаем R";
+            BR_.BR_.r_(fc_new, fbk);
+            while (!BR_.BR_.is_close_)
+            {
+                p_cur2 = BR_.BR_.result_;
+            }
+            p_cur = "ALL";
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (this.of_database.ShowDialog() == DialogResult.OK)
+            {
+                this.t_database.Text = this.of_database.FileName;
+            }
+        }
+
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            this.l_1.Text = p_cur;
+            this.l_2.Text = p_cur2;
         }
     }
 }
