@@ -275,39 +275,17 @@ namespace dataPump2.det.Data_
 
             return FIELD_SOURCE;
         }
+
+        private static readonly Regex enLetters = new Regex(@"^\w*$");
         static bool is_en_string(string st)
         {
             //проверяет - состоит ли строка только из English
-            bool is_en = true;
-            for (int i = 0; i <= st.Length - 1; i++)
-            {
-                bool is_find = false;
-                foreach (string x in list_en)
-                {
-                    if (x == st[i].ToString())
-                    {
-                        is_find = true;
-                    }
-                }
-                if (!is_find)
-                {
-                    is_en = false;
-                }
-            }
-            return is_en;
+            return enLetters.IsMatch(st);
         }
         static bool is_reserv(string st)
         {
             //зарезервированное слово?
-            bool is_find = false;
-            foreach (string x in list_reserv)
-            {
-                if (x == st.ToString().Trim())
-                {
-                    is_find = true;
-                }
-            }
-            return is_find;
+            return list_reserv.Contains(st.Trim());
         }
         #endregion
         
@@ -344,14 +322,14 @@ namespace dataPump2.det.Data_
                             {
                                 while (fr.Read())
                                 {
-                                    string dll_command = "create or alter procedure ";
+                                    var dll_command = new StringBuilder("create or alter procedure ");
                                     if (is_reserv(fr[0].ToString()))
                                     {
-                                        dll_command += "\"" + fr[0].ToString() + "\"" + "\n";
+                                        dll_command.AppendLine("\"" + fr[0].ToString() + "\"");
                                     }
                                     else
                                     {
-                                        dll_command += fr[0].ToString() + "\n";
+                                        dll_command.AppendLine(fr[0].ToString());
                                     }
                                     //Список полей
                                     string fields_in = "";
@@ -418,7 +396,7 @@ namespace dataPump2.det.Data_
                                     {
                                         fields_out += "\n )";
                                     }
-                                    dll_command += fields_in + fields_out + "\n AS\n";
+                                    dll_command.AppendLine(fields_in + fields_out + "\n AS\n");
                                     //Добавляем содержимое
                                     try
                                     {
@@ -430,8 +408,9 @@ namespace dataPump2.det.Data_
                                             {
                                                 while (fr_b.Read())
                                                 {
-                                                    dll_command += "\n" + Regex.Replace(fr_b.GetString(0), @"\bTrim\b", "TRIM_", RegexOptions.IgnoreCase);
-                                                    dll_command = Regex.Replace(dll_command, @"\bIIF\b", "IIF_", RegexOptions.IgnoreCase);
+                                                    string line = regexTrim.Replace(fr_b.GetString(0), "TRIM_");
+                                                    line = regexIIF.Replace(line, "IIF_");
+                                                    dll_command.AppendLine(line);                                                    
                                                     //.Replace("TRIM", "TRIM_").Replace("Trim", "TRIM_").Replace("trim", "TRIM_").Replace("IIF", "IIF_").Replace("iif", "IIF_").Replace("Iif", "IIF_");
                                                 }
                                                 fr_b.Dispose();
@@ -440,7 +419,7 @@ namespace dataPump2.det.Data_
                                         }
                                     }
                                     catch { }
-                                    com.Add(dll_command);
+                                    com.Add(dll_command.ToString());
                                 }
                                 fr.Dispose();
                             }
@@ -457,6 +436,7 @@ namespace dataPump2.det.Data_
                 }
                 fb.Dispose();
             }
+                        
             #endregion
             #region TRIGGERS
             using (FbConnection fb = new FbConnection(fc.ConnectionString))
@@ -472,64 +452,64 @@ namespace dataPump2.det.Data_
                             {
                                 while (fr.Read())
                                 {
-                                    string dll_command = "create or alter trigger " + fr[0].ToString().Trim() + " FOR " + fr[1].ToString();
+                                    var dll_command = new StringBuilder("create or alter trigger " + fr[0].ToString().Trim() + " FOR " + fr[1].ToString());
                                     //активность
                                     if (fr[5].ToString().Trim() == "1")
                                     {
-                                        dll_command += "\n" + "INACTIVE";
+                                        dll_command.Append("\n" + "INACTIVE");
                                     }
                                     else
                                     {
-                                        dll_command += "\n" + "ACTIVE";
+                                        dll_command.Append("\n" + "ACTIVE");
                                     }
                                     //теперь узнаем что за тип триггера
                                     switch (fr[3].ToString().Trim())
                                     {
                                         case "1":
-                                            dll_command += " before insert ";
+                                            dll_command.Append(" before insert ");
                                             break;
                                         case "2":
-                                            dll_command += " after insert ";
+                                            dll_command.Append(" after insert ");
                                             break;
                                         case "3":
-                                            dll_command += " before update ";
+                                            dll_command.Append(" before update ");
                                             break;
                                         case "4":
-                                            dll_command += " after update ";
+                                            dll_command.Append(" after update ");
                                             break;
                                         case "5":
-                                            dll_command += " before delete ";
+                                            dll_command.Append(" before delete ");
                                             break;
                                         case "6":
-                                            dll_command += " after delete ";
+                                            dll_command.Append(" after delete ");
                                             break;
                                         case "17":
-                                            dll_command += " before insert or update ";
+                                            dll_command.Append(" before insert or update ");
                                             break;
                                         case "25":
-                                            dll_command += " before insert or delete";
+                                            dll_command.Append(" before insert or delete");
                                             break;
                                         case "113":
-                                            dll_command += " before insert or update or delete ";
+                                            dll_command.Append(" before insert or update or delete ");
                                             break;
                                         case "27":
-                                            dll_command += " before update or delete ";
+                                            dll_command.Append(" before update or delete ");
                                             break;
                                         case "18":
-                                            dll_command += " after insert or update ";
+                                            dll_command.Append(" after insert or update ");
                                             break;
                                         case "26":
-                                            dll_command += " after insert or delete";
+                                            dll_command.Append(" after insert or delete");
                                             break;
                                         case "114":
-                                            dll_command += " after insert or update or delete ";
+                                            dll_command.Append(" after insert or update or delete ");
                                             break;
                                         case "28":
-                                            dll_command += " after update or delete ";
+                                            dll_command.Append(" after update or delete ");
                                             break;
                                     }
                                     //позиция триггера
-                                    dll_command += " position " + fr[2].ToString().Trim();
+                                    dll_command.Append(" position " + fr[2].ToString().Trim());
                                     //Добавляем содержимое
                                     using (FbCommand fcon_b = new FbCommand(sql_triggers_b, fb, ft))
                                     {
@@ -539,15 +519,15 @@ namespace dataPump2.det.Data_
                                         {
                                             while (fr_b.Read())
                                             {
-                                                dll_command += "\n" + fr_b.GetString(0);
+                                                dll_command.Append("\n" + fr_b.GetString(0));
                                             }
                                             fr_b.Dispose();
                                         }
                                         fcon_b.Dispose();
                                     }
-                                    dll_command = Regex.Replace(dll_command, @"\bTrim\b", "TRIM_", RegexOptions.IgnoreCase);
-                                    dll_command = Regex.Replace(dll_command, @"\bIIF\b", "IIF_", RegexOptions.IgnoreCase);
-                                    com.Add(dll_command);
+                                    string command = regexTrim.Replace(dll_command.ToString(), "TRIM_");
+                                    command = regexIIF.Replace(command, "IIF_");
+                                    com.Add(command);
                                 }
                                 fr.Dispose();
                             }
@@ -595,24 +575,30 @@ namespace dataPump2.det.Data_
             #endregion
 
             #region SAVE
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("set term ^;");
-            foreach (string cmd in com)
-            {
-                sb.AppendLine(cmd + "^");
-            }
+            //StringBuilder sb = new StringBuilder();
+            //sb.AppendLine("set term ^;");
+            //foreach (string cmd in com)
+            //{
+            //    sb.AppendLine(cmd + "^");
+            //}
+            string sb = String.Concat("set term ^;", Environment.NewLine, 
+                String.Join("^" + Environment.NewLine, com), "^", Environment.NewLine);
+
+            sb = sb.Replace("{", "{{").Replace("}", "}}");
+
             com.Clear();           
             try
             {
                 using (StreamWriter outfile = new StreamWriter(File.Create(@"d:\data.sql"), Encoding.Default))
                 {
-                    sb.Replace("{", "{{");
-                    sb.Replace("}", "}}");
-                    outfile.Write(sb.ToString(), Encoding.Default);
+                    outfile.Write(sb, Encoding.Default);
                 }
             }
             catch {  }
             #endregion
         }
+
+        private static readonly Regex regexTrim = new Regex(@"\bTrim\b", RegexOptions.IgnoreCase);
+        private static readonly Regex regexIIF = new Regex(@"\bIIF\b", RegexOptions.IgnoreCase);
     }
 }

@@ -46,7 +46,7 @@ namespace dataPump2.det.BR_
                 fr.ConnectionString = fc.ConnectionString;
                 fr.BackupFiles.Add(fbk);
                 fr.Options = FbBackupFlags.NoGarbageCollect;
-                fr.ServiceOutput += new ServiceOutputEventHandler(ServiceOutput);
+                fr.ServiceOutput += ServiceOutput;
                 fr.Execute();
             }
             catch (FbException ex)
